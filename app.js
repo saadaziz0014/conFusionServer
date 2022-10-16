@@ -45,6 +45,8 @@ function auth(req, res, next) {
   }
 }
 
+
+
 var app = express();
 
 // view engine setup
@@ -57,6 +59,8 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 app.use(auth);
+app.use(cookieParser('12345-67890-09876-54321'));
+
 
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
