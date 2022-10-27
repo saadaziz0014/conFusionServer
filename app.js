@@ -45,8 +45,6 @@ function auth(req, res, next) {
   }
 }
 
-
-
 var app = express();
 
 // view engine setup
@@ -59,14 +57,24 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 app.use(auth);
-app.use(cookieParser('12345-67890-09876-54321'));
-
+app.use(cookieParser("12345-67890-09876-54321"));
 
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
 app.use("/dishes", dishRouter);
 app.use("/promotions", promoRouter);
 app.use("/leaders", leaderRouter);
+
+app.all("*", (req, res, next) => {
+  if (req.secure) {
+    return next();
+  } else {
+    res.redirect(
+      307,
+      "https://" + req.hostname + ":" + app.get("secPort") + req.url
+    );
+  }
+});
 
 connect
   .then((db) => {
